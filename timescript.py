@@ -24,20 +24,21 @@ def convert(seconds):
     return "%d:%02d:%02d" % (hour, minutes, seconds) 
       
 # Driver program 
-
-
-for r,d,f in os.walk(folder_selected):
-    #make list ala gitignore for directory to ignore
-    if '\\venv' not in r: 
-        for file in f:
-            fileInfo = MediaInfo.parse(os.path.join(r,file))
-            for track in fileInfo.tracks:
-                    if track.track_type == "Video":
-                        #print(file,track.duration)
-                        #make list of video titles to ignore
-                        if track.duration and 'sample' not in file.lower():
-                            movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
-                            break
+def getmovieinfo(folder_selected):
+    for r,d,f in os.walk(folder_selected):
+        #make list ala gitignore for directory to ignore
+        if '\\venv' not in r: 
+            for file in f:
+                fileInfo = MediaInfo.parse(os.path.join(r,file))
+                for track in fileInfo.tracks:
+                        if track.track_type == "Video":
+                            #print(file,track.duration)
+                            #make list of video titles to ignore
+                            if track.duration and 'sample' not in file.lower():
+                                movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
+                                break
+    return movielist
+movielist = getmovieinfo(folder_selected)                                
 df = pd.DataFrame(movielist,columns=['Movie Name','Duration','MilliSecondsLong'])
 pd.set_option('display.max_rows', df.shape[0]+1)
 df = df.sort_values('Duration')
