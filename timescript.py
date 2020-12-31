@@ -15,7 +15,7 @@ for r,d,f in os.walk('.'):
                     if track.track_type == "Video":
                         #print(file,track.duration)
                         #make list of video titles to ignore
-                        if track.duration and 'sample' not in file.lower() and 'rarbg' not in file.lower() :
+                        if track.duration and 'sample' not in file.lower():
                             movielist.append([file,str(track.other_duration[3][:-1])])
 df = pd.DataFrame(movielist,columns=['Movie Name','Duration'])
 pd.set_option('display.max_rows', df.shape[0]+1)
