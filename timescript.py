@@ -9,7 +9,7 @@ from tkinter import *
 root = Tk()
 root.withdraw()
 folder_selected = filedialog.askdirectory()
-fixedfoldername = folder_selected.replace(':','').replace('/','-')
+fixedfoldername = folder_selected.replace(':','').replace('/','-').replace(' ','_')
 print(fixedfoldername)
 
 movielist = []
@@ -32,7 +32,7 @@ def getmovieinfo(folder_selected):
                 fileInfo = MediaInfo.parse(os.path.join(r,file))
                 for track in fileInfo.tracks:
                         if track.track_type == "Video":
-                            #print(file,track.duration)
+                            print(file,track.duration)
                             #make list of video titles to ignore
                             if track.duration and 'sample' not in file.lower():
                                 movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
