@@ -3,7 +3,9 @@ import os
 from pymediainfo import MediaInfo
 import pandas as pd
 import chime
-
+import platform
+import magic
+import moviepy.editor
 from tkinter import filedialog
 from tkinter import *
 root = Tk()
@@ -29,14 +31,26 @@ def getmovieinfo(folder_selected):
         #make list ala gitignore for directory to ignore
         if '\\venv' not in r: 
             for file in f:
-                fileInfo = MediaInfo.parse(os.path.join(r,file))
-                for track in fileInfo.tracks:
-                        if track.track_type == "Video":
-                            print(file,track.duration)
-                            #make list of video titles to ignore
-                            if track.duration and 'sample' not in file.lower():
-                                movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
-                                break
+                if platform.system() == 'Windows':
+                    fileInfo = MediaInfo.parse(os.path.join(r,file))
+                    for track in fileInfo.tracks:
+                            if track.track_type == "Video":
+                                print(file,track.duration)
+                                #make list of video titles to ignore
+                                if track.duration and 'sample' not in file.lower():
+                                    movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
+                                    break
+                else:
+                    mime = magic.Magic(mime=True)
+                    isvideo = mime.from_file(os.path.join(r,file)).find('video')
+                    if isvideo != -1:
+                        video = moviepy.editor.VideoFileClip(os.path.join(r,file))
+                        duration = int(video.duration)*1000
+                        movielist.append([file,convert(int(video.duration)),duration])
+
+
+
+
     return movielist
 movielist = getmovieinfo(folder_selected)                                
 df = pd.DataFrame(movielist,columns=['Movie Name','Duration','MilliSecondsLong'])
