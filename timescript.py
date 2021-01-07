@@ -38,7 +38,7 @@ def getmovieinfo(folder_selected):
                                 print(file,track.duration)
                                 #make list of video titles to ignore
                                 if track.duration and 'sample' not in file.lower():
-                                    movielist.append([file,str(track.other_duration[3][:-1]),int(float(track.duration))])
+                                    movielist.append([file,str(track.other_duration[-2]).replace(';',':'),int(float(track.duration))])
                                     break
                 else:
                     mime = magic.Magic(mime=True)
